@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { ArticleApiResponse } from './types';
+import type { ArticleApiResponse, TagsApiResponse } from './types';
 
 export const conduitApi = createApi({
   reducerPath: 'conduitApi',
@@ -8,7 +8,11 @@ export const conduitApi = createApi({
     getGlobalFeed: builder.query<ArticleApiResponse, void>({
       query: () => '/articles',
     }),
+
+    getAllTags: builder.query<TagsApiResponse, void>({
+      query: () => '/tags',
+    }),
   }),
 });
 
-export const { useGetGlobalFeedQuery } = conduitApi;
+export const { useGetGlobalFeedQuery, useGetAllTagsQuery } = conduitApi;

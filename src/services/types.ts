@@ -19,3 +19,7 @@ export interface ArticleApiResponse {
   articles: Article[];
   articlesCount: number;
 }
+
+export interface TagsApiResponse {
+  tags: string[];
+}
