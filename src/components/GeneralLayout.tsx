@@ -1,12 +1,18 @@
 import { Outlet } from 'react-router';
-import Header from './Header';
+
 import Footer from './Footer';
+import NavBar from '../Features/Navegation/NavBar';
 
 export default function GeneralLayout() {
   return (
     <>
-      <Header />
-      <Outlet />
+      <header>
+        <NavBar />
+      </header>
+      <main>
+        <Outlet />
+      </main>
+
       <Footer />
     </>
   );
