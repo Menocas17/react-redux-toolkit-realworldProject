@@ -23,3 +23,26 @@ export interface ArticleApiResponse {
 export interface TagsApiResponse {
   tags: string[];
 }
+
+export interface LoginRequest {
+  user: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  user: {
+    username: string;
+    email: string;
+    bio: string | null;
+    image: string | null;
+    token: string;
+  };
+}
+
+export interface User {
+  username: string;
+  email: string;
+  bio: string | null;
+  image: string | null;
+  token: string;
+}
