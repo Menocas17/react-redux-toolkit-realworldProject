@@ -1,4 +1,25 @@
+import { useLoginMutation } from '../../services/conduit';
+import { useActionState } from 'react';
+
 export default function Login() {
+  const [login] = useLoginMutation();
+  const [errorMsg, formAction, isPending] = useActionState(
+    async (_previousState: string | null, formData: FormData) => {
+      const email = formData.get('email') as string;
+      const password = formData.get('password') as string;
+
+      try {
+        await login({ user: { email, password } }).unwrap();
+        return null; // Éxito
+      } catch (err: any) {
+        return err?.data?.errors
+          ? 'Invalid email or password'
+          : 'Something went wrong';
+      }
+    },
+    null,
+  );
+
   return (
     <div className='auth-page'>
       <div className='container page'>
@@ -9,27 +30,34 @@ export default function Login() {
               <a href='/register'>Need an account?</a>
             </p>
 
-            <ul className='error-messages'>
-              <li>That email is already taken</li>
-            </ul>
+            {/* Mostramos el error si existe */}
+            {errorMsg && (
+              <ul className='error-messages'>
+                <li>{errorMsg}</li>
+              </ul>
+            )}
 
-            <form>
+            <form action={formAction}>
               <fieldset className='form-group'>
                 <input
+                  name='email'
                   className='form-control form-control-lg'
-                  type='text'
+                  type='email'
                   placeholder='Email'
+                  required
                 />
               </fieldset>
               <fieldset className='form-group'>
                 <input
+                  name='password'
                   className='form-control form-control-lg'
                   type='password'
                   placeholder='Password'
+                  required
                 />
               </fieldset>
               <button className='btn btn-lg btn-primary pull-xs-right'>
-                Sign in
+                {isPending ? 'Signing in...' : 'Sign in'}
               </button>
             </form>
           </div>

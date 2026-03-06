@@ -25,8 +25,7 @@ export interface TagsApiResponse {
 }
 
 export interface LoginRequest {
-  user: string;
-  password: string;
+  user: { email: string; password: string };
 }
 
 export interface LoginResponse {

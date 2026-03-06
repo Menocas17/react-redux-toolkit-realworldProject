@@ -1,10 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type {
   ArticleApiResponse,
+  LoginRequest,
   LoginResponse,
   TagsApiResponse,
 } from './types';
 import type { AuthState } from '../Features/auth/types';
+import { setCredentials } from '../Features/auth/authSlice';
 
 interface PartialState {
   auth: AuthState;
@@ -23,9 +25,11 @@ export const conduitApi = createApi({
       return headers;
     },
   }),
+  tagTypes: ['user'],
   endpoints: (builder) => ({
-    getMe: builder.query<{ user: LoginResponse }, void>({
+    getMe: builder.query<LoginResponse, void>({
       query: () => 'user',
+      providesTags: ['user'],
     }),
 
     getGlobalFeed: builder.query<ArticleApiResponse, void>({
@@ -35,7 +39,28 @@ export const conduitApi = createApi({
     getAllTags: builder.query<TagsApiResponse, void>({
       query: () => '/tags',
     }),
+
+    login: builder.mutation<LoginResponse, LoginRequest>({
+      query: (credentials) => ({
+        url: 'users/login',
+        method: 'POST',
+        body: credentials,
+      }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(
+            setCredentials({
+              token: data.user.token,
+            }),
+          );
+        } catch (err) {
+          console.error('Login Error', err);
+        }
+      },
+    }),
   }),
 });
 
-export const { useGetGlobalFeedQuery, useGetAllTagsQuery } = conduitApi;
+export const { useGetGlobalFeedQuery, useGetAllTagsQuery, useLoginMutation } =
+  conduitApi;
