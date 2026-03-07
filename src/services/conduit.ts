@@ -46,6 +46,7 @@ export const conduitApi = createApi({
         method: 'POST',
         body: credentials,
       }),
+      invalidatesTags: ['user'],
     }),
 
     register: builder.mutation<LoginResponse, RegisterRequest>({
@@ -54,6 +55,7 @@ export const conduitApi = createApi({
         method: 'POST',
         body: credentials,
       }),
+      invalidatesTags: ['user'],
     }),
   }),
 });
@@ -63,4 +65,5 @@ export const {
   useGetAllTagsQuery,
   useLoginMutation,
   useRegisterMutation,
+  useGetMeQuery,
 } = conduitApi;
