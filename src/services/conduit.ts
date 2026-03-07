@@ -58,5 +58,9 @@ export const conduitApi = createApi({
   }),
 });
 
-export const { useGetGlobalFeedQuery, useGetAllTagsQuery, useLoginMutation } =
-  conduitApi;
+export const {
+  useGetGlobalFeedQuery,
+  useGetAllTagsQuery,
+  useLoginMutation,
+  useRegisterMutation,
+} = conduitApi;
