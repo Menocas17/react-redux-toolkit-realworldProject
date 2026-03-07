@@ -3,10 +3,10 @@ import type {
   ArticleApiResponse,
   LoginRequest,
   LoginResponse,
+  RegisterRequest,
   TagsApiResponse,
 } from './types';
 import type { AuthState } from '../Features/auth/types';
-import { setCredentials } from '../Features/auth/authSlice';
 
 interface PartialState {
   auth: AuthState;
@@ -46,18 +46,14 @@ export const conduitApi = createApi({
         method: 'POST',
         body: credentials,
       }),
-      async onQueryStarted(_, { dispatch, queryFulfilled }) {
-        try {
-          const { data } = await queryFulfilled;
-          dispatch(
-            setCredentials({
-              token: data.user.token,
-            }),
-          );
-        } catch (err) {
-          console.error('Login Error', err);
-        }
-      },
+    }),
+
+    register: builder.mutation<LoginResponse, RegisterRequest>({
+      query: (credentials) => ({
+        url: 'users',
+        method: 'POST',
+        body: credentials,
+      }),
     }),
   }),
 });

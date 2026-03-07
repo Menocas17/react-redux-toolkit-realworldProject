@@ -1,18 +1,32 @@
 import { useLoginMutation } from '../../services/conduit';
 import { useActionState } from 'react';
+import { type ConduitError } from '../../services/types';
+import { useAppSelector } from '../../store/hooks';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router';
 
 export default function Login() {
   const [login] = useLoginMutation();
+  const { token } = useAppSelector((state) => state.auth);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (token) {
+      navigate('/');
+    }
+  }, [token, navigate]);
+
   const [errorMsg, formAction, isPending] = useActionState(
-    async (_previousState: string | null, formData: FormData) => {
+    async (_: string | null, formData: FormData) => {
       const email = formData.get('email') as string;
       const password = formData.get('password') as string;
 
       try {
         await login({ user: { email, password } }).unwrap();
-        return null; // Éxito
-      } catch (err: any) {
-        return err?.data?.errors
+        return null;
+      } catch (err) {
+        const error = err as ConduitError;
+        return error?.data?.errors
           ? 'Invalid email or password'
           : 'Something went wrong';
       }
@@ -30,7 +44,6 @@ export default function Login() {
               <a href='/register'>Need an account?</a>
             </p>
 
-            {/* Mostramos el error si existe */}
             {errorMsg && (
               <ul className='error-messages'>
                 <li>{errorMsg}</li>

@@ -45,3 +45,20 @@ export interface User {
   image: string | null;
   token: string;
 }
+
+export interface ConduitError {
+  status: number;
+  data: {
+    errors: {
+      [key: string]: string[];
+    };
+  };
+}
+
+export interface RegisterRequest {
+  user: {
+    username: string;
+    email: string;
+    password: string;
+  };
+}
