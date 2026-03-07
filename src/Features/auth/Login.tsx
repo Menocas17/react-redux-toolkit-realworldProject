@@ -1,20 +1,13 @@
 import { useLoginMutation } from '../../services/conduit';
-import { useActionState, useEffect } from 'react';
+import { useActionState } from 'react';
 import { type ConduitError } from '../../services/types';
 import { useAppSelector } from '../../store/hooks';
 
-import { useNavigate } from 'react-router';
+import { Navigate } from 'react-router';
 
 export default function Login() {
   const [login] = useLoginMutation();
   const { token } = useAppSelector((state) => state.auth);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (token) {
-      navigate('/');
-    }
-  }, [token, navigate]);
 
   const [errorMsg, formAction, isPending] = useActionState(
     async (_: string | null, formData: FormData) => {
@@ -33,6 +26,10 @@ export default function Login() {
     },
     null,
   );
+
+  if (!token) {
+    return <Navigate to='/' replace />;
+  }
 
   return (
     <div className='auth-page'>

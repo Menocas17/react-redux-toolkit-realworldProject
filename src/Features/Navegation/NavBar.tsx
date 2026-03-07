@@ -42,33 +42,33 @@ export default function NavBar() {
   return (
     <nav className='navbar navbar-light'>
       <div className='container'>
-        <a className='navbar-brand' href='/'>
+        <Link className='navbar-brand' to='/'>
           conduit
-        </a>
+        </Link>
         <ul className='nav navbar-nav pull-xs-right'>
           <li className='nav-item'>
-            <a className='nav-link active' href='/'>
+            <Link className='nav-link active' to='/'>
               Home
-            </a>
+            </Link>
           </li>
           <li className='nav-item'>
-            <a className='nav-link' href='/editor'>
-              <i className='ion-compose'></i>&nbsp;New Article{' '}
-            </a>
+            <Link className='nav-link' to='/editor'>
+              <i className='ion-compose'></i>&nbsp;New Article
+            </Link>
           </li>
           <li className='nav-item'>
-            <a className='nav-link' href='/settings'>
-              <i className='ion-gear-a'></i>&nbsp;Settings{' '}
-            </a>
+            <Link className='nav-link' to='/settings'>
+              <i className='ion-gear-a'></i>&nbsp;Settings
+            </Link>
           </li>
           <li className='nav-item'>
-            <a className='nav-link' href='/profile/eric-simons'>
+            <Link className='nav-link' to={`/profile/${user.user.username}`}>
               <img
                 src={user.user.image ? user.user.image : '/default-avatar.svg'}
                 className='user-pic'
               />
               {user.user.username}
-            </a>
+            </Link>
           </li>
         </ul>
       </div>

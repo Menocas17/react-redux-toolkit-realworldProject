@@ -4,6 +4,8 @@ import HomePage from '../Pages/Home';
 import GeneralLayout from '../components/GeneralLayout';
 import Register from '../Features/auth/Register';
 import Login from '../Features/auth/Login';
+import ProtectedRoutes from '../Features/auth/ProtectedRoute';
+import MyProfile from '../Features/profile/MyProfile';
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +22,15 @@ export const router = createBrowserRouter([
       {
         path: '/login',
         element: <Login />,
+      },
+      {
+        element: <ProtectedRoutes />,
+        children: [
+          {
+            path: '/profile/:username',
+            element: <MyProfile />,
+          },
+        ],
       },
     ],
   },
