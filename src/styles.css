@@ -1525,3 +1525,34 @@ footer > .container {
   margin-right: 5px;
   cursor: pointer;
 }
+
+/* Skeleton styles */
+
+.skeleton-box {
+  background-color: #eee;
+  border-radius: 4px;
+  display: inline-block;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.skeleton-avatar {
+  width: 26px;
+  height: 26px;
+  background-color: #eee;
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: middle;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}

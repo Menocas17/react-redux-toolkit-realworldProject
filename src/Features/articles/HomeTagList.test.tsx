@@ -1,4 +1,3 @@
-// src/Features/articles/HomeTagList.test.tsx
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from '../../utils/test-utils';
 import { describe, it, expect } from 'vitest';

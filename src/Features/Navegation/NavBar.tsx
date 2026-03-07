@@ -1,8 +1,15 @@
 import { Link } from 'react-router';
 import { useGetMeQuery } from '../../services/conduit';
+import { useAppSelector } from '../../store/hooks';
+import NavSkeleton from './NavSkeleton';
 
 export default function NavBar() {
-  const { data: user, error } = useGetMeQuery();
+  const { data: user, error, isLoading } = useGetMeQuery();
+  const { token } = useAppSelector((state) => state.auth);
+
+  if (token && isLoading) {
+    return <NavSkeleton />;
+  }
 
   if (error || !user) {
     return (
@@ -46,13 +53,11 @@ export default function NavBar() {
           </li>
           <li className='nav-item'>
             <a className='nav-link' href='/editor'>
-              {' '}
               <i className='ion-compose'></i>&nbsp;New Article{' '}
             </a>
           </li>
           <li className='nav-item'>
             <a className='nav-link' href='/settings'>
-              {' '}
               <i className='ion-gear-a'></i>&nbsp;Settings{' '}
             </a>
           </li>
