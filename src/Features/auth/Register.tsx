@@ -1,19 +1,12 @@
 import { useRegisterMutation } from '../../services/conduit';
-import { useNavigate } from 'react-router';
-import { useEffect, useActionState } from 'react';
+import { Navigate } from 'react-router';
+import { useActionState } from 'react';
 import { useAppSelector } from '../../store/hooks';
 import { type ConduitError } from '../../services/types';
 
 export default function Register() {
   const [register] = useRegisterMutation();
   const { token } = useAppSelector((state) => state.auth);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (token) {
-      navigate('/');
-    }
-  }, [token, navigate]);
 
   const [errorMsg, formAction, isPending] = useActionState(
     async (_: string | null, formData: FormData) => {
@@ -37,6 +30,10 @@ export default function Register() {
     },
     null,
   );
+
+  if (token) {
+    <Navigate to={'/'} replace />;
+  }
 
   return (
     <div className='auth-page'>

@@ -27,7 +27,7 @@ export default function Login() {
     null,
   );
 
-  if (!token) {
+  if (token) {
     return <Navigate to='/' replace />;
   }
 

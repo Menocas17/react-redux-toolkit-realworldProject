@@ -5,7 +5,7 @@ import GeneralLayout from '../components/GeneralLayout';
 import Register from '../Features/auth/Register';
 import Login from '../Features/auth/Login';
 import ProtectedRoutes from '../Features/auth/ProtectedRoute';
-import MyProfile from '../Features/profile/MyProfile';
+import MyProfile from '../Features/profile/Profile';
 
 export const router = createBrowserRouter([
   {

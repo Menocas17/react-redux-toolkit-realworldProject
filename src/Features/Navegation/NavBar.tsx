@@ -4,8 +4,12 @@ import { useAppSelector } from '../../store/hooks';
 import NavSkeleton from './NavSkeleton';
 
 export default function NavBar() {
-  const { data: user, error, isLoading } = useGetMeQuery();
   const { token } = useAppSelector((state) => state.auth);
+  const {
+    data: user,
+    error,
+    isLoading,
+  } = useGetMeQuery(undefined, { skip: !token });
 
   if (token && isLoading) {
     return <NavSkeleton />;
