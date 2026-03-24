@@ -6,6 +6,7 @@ import Register from '../Features/auth/Register';
 import Login from '../Features/auth/Login';
 import ProtectedRoutes from '../Features/auth/ProtectedRoute';
 import MyProfile from '../Features/profile/Profile';
+import Settings from '../Features/Settings/Settings';
 
 export const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ export const router = createBrowserRouter([
           {
             path: '/profile/:username',
             element: <MyProfile />,
+          },
+          {
+            path: '/settings',
+            element: <Settings />,
           },
         ],
       },

@@ -15,7 +15,7 @@ export default function NavBar() {
     return <NavSkeleton />;
   }
 
-  if (error || !user) {
+  if (error || !token) {
     return (
       <nav className='navbar navbar-light'>
         <div className='container'>
@@ -43,39 +43,44 @@ export default function NavBar() {
       </nav>
     );
   }
-  return (
-    <nav className='navbar navbar-light'>
-      <div className='container'>
-        <Link className='navbar-brand' to='/'>
-          conduit
-        </Link>
-        <ul className='nav navbar-nav pull-xs-right'>
-          <li className='nav-item'>
-            <Link className='nav-link active' to='/'>
-              Home
-            </Link>
-          </li>
-          <li className='nav-item'>
-            <Link className='nav-link' to='/editor'>
-              <i className='ion-compose'></i>&nbsp;New Article
-            </Link>
-          </li>
-          <li className='nav-item'>
-            <Link className='nav-link' to='/settings'>
-              <i className='ion-gear-a'></i>&nbsp;Settings
-            </Link>
-          </li>
-          <li className='nav-item'>
-            <Link className='nav-link' to={`/profile/${user.user.username}`}>
-              <img
-                src={user.user.image ? user.user.image : '/default-avatar.svg'}
-                className='user-pic'
-              />
-              {user.user.username}
-            </Link>
-          </li>
-        </ul>
-      </div>
-    </nav>
-  );
+
+  if (user) {
+    return (
+      <nav className='navbar navbar-light'>
+        <div className='container'>
+          <Link className='navbar-brand' to='/'>
+            conduit
+          </Link>
+          <ul className='nav navbar-nav pull-xs-right'>
+            <li className='nav-item'>
+              <Link className='nav-link active' to='/'>
+                Home
+              </Link>
+            </li>
+            <li className='nav-item'>
+              <Link className='nav-link' to='/editor'>
+                <i className='ion-compose'></i>&nbsp;New Article
+              </Link>
+            </li>
+            <li className='nav-item'>
+              <Link className='nav-link' to='/settings'>
+                <i className='ion-gear-a'></i>&nbsp;Settings
+              </Link>
+            </li>
+            <li className='nav-item'>
+              <Link className='nav-link' to={`/profile/${user.user.username}`}>
+                <img
+                  src={
+                    user.user.image ? user.user.image : '/default-avatar.svg'
+                  }
+                  className='user-pic'
+                />
+                {user.user.username}
+              </Link>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    );
+  }
 }
