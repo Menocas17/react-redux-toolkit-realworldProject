@@ -1,13 +1,14 @@
 import { useLoginMutation } from '../../services/conduit';
 import { useActionState } from 'react';
 import { type ConduitError } from '../../services/types';
-import { useAppSelector } from '../../store/hooks';
+import { useGetMeQuery } from '../../services/conduit';
 
 import { Navigate } from 'react-router';
 
 export default function Login() {
   const [login] = useLoginMutation();
-  const { token } = useAppSelector((state) => state.auth);
+
+  const { error } = useGetMeQuery();
 
   const [errorMsg, formAction, isPending] = useActionState(
     async (_: string | null, formData: FormData) => {
@@ -27,52 +28,51 @@ export default function Login() {
     null,
   );
 
-  if (token) {
-    return <Navigate to='/' replace />;
-  }
+  if (error) {
+    return (
+      <div className='auth-page'>
+        <div className='container page'>
+          <div className='row'>
+            <div className='col-md-6 offset-md-3 col-xs-12'>
+              <h1 className='text-xs-center'>Sign in</h1>
+              <p className='text-xs-center'>
+                <a href='/register'>Need an account?</a>
+              </p>
 
-  return (
-    <div className='auth-page'>
-      <div className='container page'>
-        <div className='row'>
-          <div className='col-md-6 offset-md-3 col-xs-12'>
-            <h1 className='text-xs-center'>Sign in</h1>
-            <p className='text-xs-center'>
-              <a href='/register'>Need an account?</a>
-            </p>
+              {errorMsg && (
+                <ul className='error-messages'>
+                  <li>{errorMsg}</li>
+                </ul>
+              )}
 
-            {errorMsg && (
-              <ul className='error-messages'>
-                <li>{errorMsg}</li>
-              </ul>
-            )}
-
-            <form action={formAction}>
-              <fieldset className='form-group'>
-                <input
-                  name='email'
-                  className='form-control form-control-lg'
-                  type='email'
-                  placeholder='Email'
-                  required
-                />
-              </fieldset>
-              <fieldset className='form-group'>
-                <input
-                  name='password'
-                  className='form-control form-control-lg'
-                  type='password'
-                  placeholder='Password'
-                  required
-                />
-              </fieldset>
-              <button className='btn btn-lg btn-primary pull-xs-right'>
-                {isPending ? 'Signing in...' : 'Sign in'}
-              </button>
-            </form>
+              <form action={formAction}>
+                <fieldset className='form-group'>
+                  <input
+                    name='email'
+                    className='form-control form-control-lg'
+                    type='email'
+                    placeholder='Email'
+                    required
+                  />
+                </fieldset>
+                <fieldset className='form-group'>
+                  <input
+                    name='password'
+                    className='form-control form-control-lg'
+                    type='password'
+                    placeholder='Password'
+                    required
+                  />
+                </fieldset>
+                <button className='btn btn-lg btn-primary pull-xs-right'>
+                  {isPending ? 'Signing in...' : 'Sign in'}
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
+  return <Navigate to='/' replace />;
 }
