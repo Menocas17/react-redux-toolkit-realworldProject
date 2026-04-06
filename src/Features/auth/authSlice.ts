@@ -1,6 +1,11 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import {
+  createSlice,
+  isRejectedWithValue,
+  type PayloadAction,
+} from '@reduxjs/toolkit';
 import type { AuthState } from './types';
 import { conduitApi } from '../../services/conduit';
+import { type ConduitError } from '../../services/types';
 
 const initialState: AuthState = {
   token: localStorage.getItem('token'),
@@ -32,6 +37,15 @@ const authSlice = createSlice({
         localStorage.setItem('token', token);
       },
     );
+
+    builder.addMatcher(isRejectedWithValue, (state, action) => {
+      const payload = action.payload as ConduitError | undefined;
+
+      if (payload?.status === 401) {
+        state.token = null;
+        localStorage.removeItem('token');
+      }
+    });
   },
 });
 
