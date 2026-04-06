@@ -1,3 +1,4 @@
+//TODO - Add interactivity to this page to allow users actually update their profile
 import { logout } from '../auth/authSlice';
 import { conduitApi } from '../../services/conduit';
 import { useAppDispatch } from '../../store/hooks';

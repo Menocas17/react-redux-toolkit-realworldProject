@@ -1,3 +1,4 @@
+//TODO - Add intereactivity to this page
 export default function ArticleEditor() {
   return (
     <div className='editor-page'>

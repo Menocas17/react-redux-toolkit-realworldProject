@@ -1,3 +1,5 @@
+//TODO - Add the follow/unfollow feature
+
 import { Link } from 'react-router';
 import {
   useGetMeQuery,

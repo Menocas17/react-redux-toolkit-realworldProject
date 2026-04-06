@@ -1,3 +1,5 @@
+//TODO - Add the proper pagination to this page
+//TODO - Add the interactivity to change to 'your feed' and to filter by tags
 import '../styles.css';
 import GlobalFeed from '../Features/articles/GlobalFeed';
 import TagList from '../Features/articles/HomeTagList';
