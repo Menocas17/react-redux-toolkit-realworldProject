@@ -45,6 +45,10 @@ export const conduitApi = createApi({
       query: () => '/tags',
     }),
 
+    getProfileArticles: builder.query<ArticleApiResponse, string>({
+      query: (author) => `/articles/?author=${author}`,
+    }),
+
     login: builder.mutation<LoginResponse, LoginRequest>({
       query: (credentials) => ({
         url: 'users/login',
@@ -72,4 +76,5 @@ export const {
   useRegisterMutation,
   useGetMeQuery,
   useGetProfileQuery,
+  useGetProfileArticlesQuery,
 } = conduitApi;

@@ -1551,6 +1551,15 @@ footer > .container {
   gap: 10px;
 }
 
+.no-articles {
+  color: #818a91;
+  font-size: 35px;
+  margin-top: 1px;
+  border-top: 1px solid #eeeeee;
+  padding-top: 20px;
+  text-align: center;
+}
+
 @keyframes pulse {
   0% {
     opacity: 1;
