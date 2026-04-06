@@ -20,6 +20,7 @@ export default function Register() {
 
       try {
         await register(payload).unwrap();
+
         return null;
       } catch (err) {
         const error = err as ConduitError;
@@ -32,7 +33,7 @@ export default function Register() {
   );
 
   if (token) {
-    <Navigate to={'/'} replace />;
+    return <Navigate to={'/'} replace />;
   }
 
   return (
