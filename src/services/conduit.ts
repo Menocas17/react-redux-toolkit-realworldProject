@@ -6,6 +6,7 @@ import type {
   RegisterRequest,
   TagsApiResponse,
   ProfileResponse,
+  PagingParams,
 } from './types';
 import type { AuthState } from '../Features/auth/types';
 
@@ -45,8 +46,14 @@ export const conduitApi = createApi({
       query: () => '/tags',
     }),
 
-    getProfileArticles: builder.query<ArticleApiResponse, string>({
-      query: (author) => `/articles/?author=${author}`,
+    getProfileArticles: builder.query<ArticleApiResponse, PagingParams>({
+      query: ({ username, limit, offset }) =>
+        `/articles/?author=${username}&limit=${limit}&offset=${offset}`,
+    }),
+
+    getProfileFavArticles: builder.query<ArticleApiResponse, PagingParams>({
+      query: ({ username, limit, offset }) =>
+        `/articles/?favorited=${username}&limit=${limit}&offset=${offset}`,
     }),
 
     login: builder.mutation<LoginResponse, LoginRequest>({
@@ -77,4 +84,5 @@ export const {
   useGetMeQuery,
   useGetProfileQuery,
   useGetProfileArticlesQuery,
+  useGetProfileFavArticlesQuery,
 } = conduitApi;

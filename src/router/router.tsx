@@ -35,6 +35,7 @@ export const router = createBrowserRouter([
           },
           {
             path: 'profile/:username/favorites',
+            element: <MyProfile />,
           },
           {
             path: '/settings',

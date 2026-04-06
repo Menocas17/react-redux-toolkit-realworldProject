@@ -71,3 +71,9 @@ export interface ProfileResponse {
     following: boolean;
   };
 }
+
+export interface PagingParams {
+  username: string;
+  limit: number;
+  offset: number;
+}

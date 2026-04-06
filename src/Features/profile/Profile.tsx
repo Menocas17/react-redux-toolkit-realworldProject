@@ -1,16 +1,47 @@
 import { Link } from 'react-router';
-import { useGetMeQuery, useGetProfileQuery } from '../../services/conduit';
+import {
+  useGetMeQuery,
+  useGetProfileQuery,
+  useGetProfileArticlesQuery,
+  useGetProfileFavArticlesQuery,
+} from '../../services/conduit';
 import { useParams } from 'react-router';
-import { useGetProfileArticlesQuery } from '../../services/conduit';
 import ArticleList from '../articles/ArticleList';
+import { NavLink } from 'react-router';
+import { useLocation } from 'react-router';
+import { useState } from 'react';
 
 export default function MyProfile() {
+  const { pathname } = useLocation();
+  const isFavoritesPage = pathname.endsWith('/favorites');
   const { username } = useParams<{ username: string }>();
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 5;
+  const offset = (currentPage - 1) * limit;
+
   const { data: user } = useGetMeQuery();
   const { data } = useGetProfileQuery(username ?? '');
-  const { data: articlesResponse } = useGetProfileArticlesQuery(username ?? '');
+  const { data: articlesResponse, isFetching: isFetchingArticles } =
+    useGetProfileArticlesQuery(
+      { username: username ?? '', limit, offset },
+      { skip: isFavoritesPage || !username },
+    );
+  const { data: favArtResponse, isFetching: isFetchingFavs } =
+    useGetProfileFavArticlesQuery(
+      { username: username ?? '', limit, offset },
+      { skip: !isFavoritesPage },
+    );
+
+  const totalArticles = isFavoritesPage
+    ? favArtResponse?.articlesCount
+    : articlesResponse?.articlesCount;
+
+  const totalPages = Math.ceil((totalArticles ?? 0) / limit);
 
   const articleList = articlesResponse?.articles;
+  const favArticleList = favArtResponse?.articles;
+  const isFetching = isFetchingArticles || isFetchingFavs;
 
   const isOwnProfile = user?.user.username === data?.profile.username;
 
@@ -67,31 +98,58 @@ export default function MyProfile() {
             <div className='articles-toggle'>
               <ul className='nav nav-pills outline-active'>
                 <li className='nav-item'>
-                  <a className='nav-link active' href=''>
+                  <NavLink
+                    end
+                    className={({ isActive }) =>
+                      isActive ? 'nav-link active' : 'nav-link'
+                    }
+                    to={`/profile/${data?.profile.username}`}
+                    onClick={() => setCurrentPage(1)}
+                  >
                     My Articles
-                  </a>
+                  </NavLink>
                 </li>
                 <li className='nav-item'>
-                  <a className='nav-link' href=''>
+                  <NavLink
+                    className={({ isActive }) =>
+                      isActive ? 'nav-link active' : 'nav-link'
+                    }
+                    to={`/profile/${data?.profile.username}/favorites`}
+                    onClick={() => setCurrentPage(1)}
+                  >
                     Favorited Articles
-                  </a>
+                  </NavLink>
                 </li>
               </ul>
             </div>
-
-            <ArticleList articles={articleList} />
-
+            {/* //TODO - Add the skeletons to a better UI */}
+            {isFetching ? (
+              <div className='article-preview'>Loading articles...</div>
+            ) : (
+              <>
+                {isFavoritesPage ? (
+                  <ArticleList articles={favArticleList} />
+                ) : (
+                  <ArticleList articles={articleList} />
+                )}
+              </>
+            )}
             <ul className='pagination'>
-              <li className='page-item active'>
-                <a className='page-link' href=''>
-                  1
-                </a>
-              </li>
-              <li className='page-item'>
-                <a className='page-link' href=''>
-                  2
-                </a>
-              </li>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <li
+                    key={page}
+                    className={`page-item ${currentPage === page ? 'active' : ''}`}
+                  >
+                    <a
+                      className='page-link'
+                      onClick={() => setCurrentPage(page)}
+                    >
+                      {page}
+                    </a>
+                  </li>
+                ),
+              )}
             </ul>
           </div>
         </div>
