@@ -5,6 +5,7 @@ import type {
   LoginResponse,
   RegisterRequest,
   TagsApiResponse,
+  ProfileResponse,
 } from './types';
 import type { AuthState } from '../Features/auth/types';
 
@@ -30,6 +31,10 @@ export const conduitApi = createApi({
     getMe: builder.query<LoginResponse, void>({
       query: () => 'user',
       providesTags: ['user'],
+    }),
+
+    getProfile: builder.query<ProfileResponse, string>({
+      query: (username) => `profiles/${username}`,
     }),
 
     getGlobalFeed: builder.query<ArticleApiResponse, void>({
@@ -66,4 +71,5 @@ export const {
   useLoginMutation,
   useRegisterMutation,
   useGetMeQuery,
+  useGetProfileQuery,
 } = conduitApi;

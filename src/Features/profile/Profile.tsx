@@ -1,7 +1,13 @@
-import { useGetMeQuery } from '../../services/conduit';
+import { Link } from 'react-router';
+import { useGetMeQuery, useGetProfileQuery } from '../../services/conduit';
+import { useParams } from 'react-router';
 
 export default function MyProfile() {
-  const { data } = useGetMeQuery();
+  const { username } = useParams<{ username: string }>();
+  const { data: user } = useGetMeQuery();
+  const { data } = useGetProfileQuery(username ?? '');
+
+  const isOwnProfile = user?.user.username === data?.profile.username;
 
   return (
     <div className='profile-page'>
@@ -9,20 +15,38 @@ export default function MyProfile() {
         <div className='container'>
           <div className='row'>
             <div className='col-xs-12 col-md-10 offset-md-1'>
-              <img src='http://i.imgur.com/Qr71crq.jpg' className='user-img' />
-              <h4>{data?.user.username}</h4>
+              <img
+                src={
+                  data?.profile.image
+                    ? data?.profile.image
+                    : '/default-avatar.svg'
+                }
+                className='user-img'
+              />
+              <h4>{data?.profile.username}</h4>
               <p>
-                Cofounder @GoThinkster, lived in Aol's HQ for a few months,
-                kinda looks like Peeta from the Hunger Games
+                {data?.profile.bio
+                  ? data.profile.bio
+                  : 'No bio yet, go to settings to add a new bio'}
               </p>
-              <button className='btn btn-sm btn-outline-secondary action-btn'>
-                <i className='ion-plus-round'></i>
-                &nbsp; Follow Eric Simons
-              </button>
-              <button className='btn btn-sm btn-outline-secondary action-btn'>
-                <i className='ion-gear-a'></i>
-                &nbsp; Edit Profile Settings
-              </button>
+
+              <div className='profile-buttons'>
+                {isOwnProfile ? (
+                  ''
+                ) : (
+                  <button className='btn btn-sm btn-outline-secondary action-btn'>
+                    <i className='ion-plus-round'></i>
+                    &nbsp; Follow Eric Simons
+                  </button>
+                )}
+
+                <Link to={'/settings'}>
+                  <button className='btn btn-sm btn-outline-secondary action-btn'>
+                    <i className='ion-gear-a'></i>
+                    &nbsp; Edit Profile Settings
+                  </button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>

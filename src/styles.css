@@ -1545,6 +1545,12 @@ footer > .container {
   animation: pulse 1.5s infinite ease-in-out;
 }
 
+.profile-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
 @keyframes pulse {
   0% {
     opacity: 1;
