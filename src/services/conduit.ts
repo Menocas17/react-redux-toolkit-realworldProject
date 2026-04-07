@@ -29,7 +29,7 @@ export const conduitApi = createApi({
     },
   }),
 
-  tagTypes: ['user', 'articles'],
+  tagTypes: ['user', 'articles', 'profile'],
   endpoints: (builder) => ({
     getMe: builder.query<LoginResponse, void>({
       query: () => 'user',
@@ -38,6 +38,7 @@ export const conduitApi = createApi({
 
     getProfile: builder.query<ProfileResponse, string>({
       query: (username) => `profiles/${username}`,
+      providesTags: ['profile'],
     }),
 
     getAllTags: builder.query<TagsApiResponse, void>({
@@ -133,6 +134,22 @@ export const conduitApi = createApi({
       }),
       invalidatesTags: [{ type: 'articles', id: 'LIST' }],
     }),
+
+    followUser: builder.mutation<ProfileResponse, string>({
+      query: (username) => ({
+        url: `profiles/${username}/follow`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['profile'],
+    }),
+
+    UnFollowUser: builder.mutation<ProfileResponse, string>({
+      query: (username) => ({
+        url: `profiles/${username}/follow`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['profile'],
+    }),
   }),
 });
 
@@ -148,4 +165,6 @@ export const {
   useFavoriteMutation,
   useUnFavoriteMutation,
   useAddArticleMutation,
+  useFollowUserMutation,
+  useUnFollowUserMutation,
 } = conduitApi;

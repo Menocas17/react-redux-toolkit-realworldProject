@@ -1,3 +1,5 @@
+//TODO - Make this page actually display real info and add interactivity (being able to favorite the article, or going to edit or delete the article if you are the owner)
+
 export default function Article() {
   return (
     <div className='article-page'>

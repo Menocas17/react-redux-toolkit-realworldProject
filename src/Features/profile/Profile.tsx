@@ -1,11 +1,11 @@
-//TODO - Add the follow/unfollow feature
-
 import { Link } from 'react-router';
 import {
   useGetMeQuery,
   useGetProfileQuery,
   useGetProfileArticlesQuery,
   useGetProfileFavArticlesQuery,
+  useFollowUserMutation,
+  useUnFollowUserMutation,
 } from '../../services/conduit';
 import { useParams } from 'react-router';
 import ArticleList from '../articles/ArticleList';
@@ -34,6 +34,9 @@ export default function MyProfile() {
       { username: username ?? '', limit, offset },
       { skip: !isFavoritesPage },
     );
+
+  const [followUser] = useFollowUserMutation();
+  const [unFollowUser] = useUnFollowUserMutation();
 
   const totalArticles = isFavoritesPage
     ? favArtResponse?.articlesCount
@@ -72,9 +75,19 @@ export default function MyProfile() {
                 {isOwnProfile ? (
                   ''
                 ) : (
-                  <button className='btn btn-sm btn-outline-secondary action-btn'>
+                  <button
+                    className='btn btn-sm btn-outline-secondary action-btn'
+                    onClick={
+                      data?.profile.following
+                        ? () => unFollowUser(data?.profile.username ?? '')
+                        : () => followUser(data?.profile.username ?? '')
+                    }
+                  >
                     <i className='ion-plus-round'></i>
-                    &nbsp; Follow {data?.profile.username}
+                    &nbsp; {data?.profile.following
+                      ? 'Unfollow'
+                      : 'Follow'}{' '}
+                    {data?.profile.username}
                   </button>
                 )}
 
