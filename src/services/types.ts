@@ -15,6 +15,15 @@ export interface Article {
   };
 }
 
+export interface ArticleCreation {
+  article: {
+    title: string;
+    description: string;
+    body: string;
+    tagList: string[];
+  };
+}
+
 export interface ArticleApiResponse {
   articles: Article[];
   articlesCount: number;

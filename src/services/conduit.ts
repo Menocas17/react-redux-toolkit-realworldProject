@@ -8,6 +8,7 @@ import type {
   TagsApiResponse,
   ProfileResponse,
   PagingParams,
+  ArticleCreation,
 } from './types';
 import type { AuthState } from '../Features/auth/types';
 
@@ -123,6 +124,15 @@ export const conduitApi = createApi({
 
       invalidatesTags: (result, error, arg) => [{ type: 'articles', id: arg }],
     }),
+
+    addArticle: builder.mutation<Article, ArticleCreation>({
+      query: (article) => ({
+        url: 'articles',
+        method: 'POST',
+        body: article,
+      }),
+      invalidatesTags: [{ type: 'articles', id: 'LIST' }],
+    }),
   }),
 });
 
@@ -137,4 +147,5 @@ export const {
   useGetProfileFavArticlesQuery,
   useFavoriteMutation,
   useUnFavoriteMutation,
+  useAddArticleMutation,
 } = conduitApi;

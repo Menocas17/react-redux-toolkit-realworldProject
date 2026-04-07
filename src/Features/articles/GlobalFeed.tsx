@@ -10,6 +10,7 @@ export default function GlobalFeed() {
   if (error) return <h1>Opps something went wrong, try relodign the page</h1>;
 
   const articles = globalFeed?.articles;
+  console.log(articles);
 
   if (!articles) return <h1>There is no articles at this moment</h1>;
 

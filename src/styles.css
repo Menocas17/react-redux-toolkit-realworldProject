@@ -1058,6 +1058,10 @@ fieldset[disabled] a.btn {
   background: none;
 }
 
+.tagList {
+  margin-top: 15px;
+}
+
 ul.tag-list {
   display: inline-block;
 }
