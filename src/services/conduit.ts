@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type {
+  Article,
   ArticleApiResponse,
   LoginRequest,
   LoginResponse,
@@ -23,11 +24,11 @@ export const conduitApi = createApi({
       if (token) {
         headers.set('Authorization', `Token ${token}`);
       }
-
       return headers;
     },
   }),
-  tagTypes: ['user'],
+
+  tagTypes: ['user', 'articles'],
   endpoints: (builder) => ({
     getMe: builder.query<LoginResponse, void>({
       query: () => 'user',
@@ -38,22 +39,53 @@ export const conduitApi = createApi({
       query: (username) => `profiles/${username}`,
     }),
 
-    getGlobalFeed: builder.query<ArticleApiResponse, void>({
-      query: () => '/articles',
-    }),
-
     getAllTags: builder.query<TagsApiResponse, void>({
       query: () => '/tags',
     }),
 
+    getGlobalFeed: builder.query<ArticleApiResponse, void>({
+      query: () => '/articles',
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.articles.map(({ slug }: { slug: string }) => ({
+                type: 'articles' as const,
+                id: slug,
+              })),
+
+              { type: 'articles', id: 'LIST' },
+            ]
+          : [{ type: 'articles', id: 'LIST' }],
+    }),
+
     getProfileArticles: builder.query<ArticleApiResponse, PagingParams>({
       query: ({ username, limit, offset }) =>
-        `/articles/?author=${username}&limit=${limit}&offset=${offset}`,
+        `/articles?author=${username}&limit=${limit}&offset=${offset}`,
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.articles.map(({ slug }: { slug: string }) => ({
+                type: 'articles' as const,
+                id: slug,
+              })),
+              { type: 'articles', id: 'LIST' },
+            ]
+          : [{ type: 'articles', id: 'LIST' }],
     }),
 
     getProfileFavArticles: builder.query<ArticleApiResponse, PagingParams>({
       query: ({ username, limit, offset }) =>
-        `/articles/?favorited=${username}&limit=${limit}&offset=${offset}`,
+        `/articles?favorited=${username}&limit=${limit}&offset=${offset}`,
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.articles.map(({ slug }: { slug: string }) => ({
+                type: 'articles' as const,
+                id: slug,
+              })),
+              { type: 'articles', id: 'LIST' },
+            ]
+          : [{ type: 'articles', id: 'LIST' }],
     }),
 
     login: builder.mutation<LoginResponse, LoginRequest>({
@@ -73,6 +105,24 @@ export const conduitApi = createApi({
       }),
       invalidatesTags: ['user'],
     }),
+
+    favorite: builder.mutation<Article, string>({
+      query: (slug) => ({
+        url: `articles/${slug}/favorite`,
+        method: 'POST',
+      }),
+
+      invalidatesTags: (result, error, arg) => [{ type: 'articles', id: arg }],
+    }),
+
+    unFavorite: builder.mutation<Article, string>({
+      query: (slug) => ({
+        url: `articles/${slug}/favorite`,
+        method: 'DELETE',
+      }),
+
+      invalidatesTags: (result, error, arg) => [{ type: 'articles', id: arg }],
+    }),
   }),
 });
 
@@ -85,4 +135,6 @@ export const {
   useGetProfileQuery,
   useGetProfileArticlesQuery,
   useGetProfileFavArticlesQuery,
+  useFavoriteMutation,
+  useUnFavoriteMutation,
 } = conduitApi;

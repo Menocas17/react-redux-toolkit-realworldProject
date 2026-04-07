@@ -1,12 +1,18 @@
-//TODO - Add the favorited button feature
 import { formatDate } from '../../utils/DataFormatter';
 import { type Article } from '../../services/types';
+import {
+  useFavoriteMutation,
+  useUnFavoriteMutation,
+} from '../../services/conduit';
 
 export default function ArticleList({
   articles,
 }: {
   articles: Article[] | undefined;
 }) {
+  const [favorite] = useFavoriteMutation();
+  const [unFavorite] = useUnFavoriteMutation();
+
   if (articles?.length === 0) {
     return (
       <div className='no-articles'>
@@ -38,7 +44,18 @@ export default function ArticleList({
               </a>
               <span className='date'>{formatDate(article.createdAt)}</span>
             </div>
-            <button className='btn btn-outline-primary btn-sm pull-xs-right'>
+            <button
+              className={
+                article.favorited
+                  ? `btn btn-outline-primary btn-sm pull-xs-right favorited`
+                  : 'btn btn-outline-primary btn-sm pull-xs-right'
+              }
+              onClick={
+                article.favorited
+                  ? () => unFavorite(article.slug)
+                  : () => favorite(article.slug)
+              }
+            >
               <i className='ion-heart'></i> {article.favoritesCount}
             </button>
           </div>
