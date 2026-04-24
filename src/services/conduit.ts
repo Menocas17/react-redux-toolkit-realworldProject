@@ -9,6 +9,7 @@ import type {
   ProfileResponse,
   PagingParams,
   ArticleCreation,
+  UpdateUserRequest,
 } from './types';
 import type { AuthState } from '../Features/auth/types';
 
@@ -108,6 +109,15 @@ export const conduitApi = createApi({
       invalidatesTags: ['user'],
     }),
 
+    updateUser: builder.mutation<LoginResponse, Partial<UpdateUserRequest>>({
+      query: (updatedInfo) => ({
+        url: 'user',
+        method: 'PUT',
+        body: updatedInfo,
+      }),
+      invalidatesTags: ['user'],
+    }),
+
     favorite: builder.mutation<Article, string>({
       query: (slug) => ({
         url: `articles/${slug}/favorite`,
@@ -167,4 +177,5 @@ export const {
   useAddArticleMutation,
   useFollowUserMutation,
   useUnFollowUserMutation,
+  useUpdateUserMutation,
 } = conduitApi;

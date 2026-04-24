@@ -47,6 +47,16 @@ export interface LoginResponse {
   };
 }
 
+export interface UpdateUserRequest {
+  user: {
+    username: string | undefined;
+    email: string | undefined;
+    bio: string | undefined;
+    image: string | undefined;
+    password: string | undefined;
+  };
+}
+
 export interface User {
   username: string;
   email: string;

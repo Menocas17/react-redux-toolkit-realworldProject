@@ -1,10 +1,36 @@
-//TODO - Add interactivity to this page to allow users actually update their profile
 import { logout } from '../auth/authSlice';
 import { conduitApi } from '../../services/conduit';
 import { useAppDispatch } from '../../store/hooks';
+import { useUpdateUserMutation } from '../../services/conduit';
+import { useActionState } from 'react';
+import type { ConduitError } from '../../services/types';
+
+type ActionState = { [key: string]: string[] } | null;
 
 export default function Settings() {
   const dispatch = useAppDispatch();
+  const [update] = useUpdateUserMutation();
+
+  const [errMsg, formAction, isPending] = useActionState<ActionState, FormData>(
+    async (_, formData) => {
+      const image = formData.get('picture')?.toString() || undefined;
+      const username = formData.get('name')?.toString() || undefined;
+      const bio = formData.get('bio')?.toString() || undefined;
+      const email = formData.get('email')?.toString() || undefined;
+      const password = formData.get('password')?.toString() || undefined;
+
+      try {
+        await update({
+          user: { username, email, bio, image, password },
+        }).unwrap();
+        return null;
+      } catch (err) {
+        const error = err as ConduitError;
+        return error?.data.errors;
+      }
+    },
+    null,
+  );
 
   const handleLogout = () => {
     dispatch(logout());
@@ -18,17 +44,26 @@ export default function Settings() {
           <div className='col-md-6 offset-md-3 col-xs-12'>
             <h1 className='text-xs-center'>Your Settings</h1>
 
-            <ul className='error-messages'>
-              <li>That name is required</li>
-            </ul>
+            {errMsg && (
+              <ul className='error-messages'>
+                {Object.entries(errMsg).map(([field, messages]) =>
+                  messages.map((message, index) => (
+                    <li key={`${field} - ${index}`}>
+                      {field} {message}
+                    </li>
+                  )),
+                )}
+              </ul>
+            )}
 
-            <form>
+            <form action={formAction}>
               <fieldset>
                 <fieldset className='form-group'>
                   <input
                     className='form-control'
                     type='text'
                     placeholder='URL of profile picture'
+                    name='picture'
                   />
                 </fieldset>
                 <fieldset className='form-group'>
@@ -36,6 +71,7 @@ export default function Settings() {
                     className='form-control form-control-lg'
                     type='text'
                     placeholder='Your Name'
+                    name='name'
                   />
                 </fieldset>
                 <fieldset className='form-group'>
@@ -43,13 +79,16 @@ export default function Settings() {
                     className='form-control form-control-lg'
                     rows={8}
                     placeholder='Short bio about you'
+                    name='bio'
                   ></textarea>
                 </fieldset>
+                <p>Email is always required when updating</p>
                 <fieldset className='form-group'>
                   <input
                     className='form-control form-control-lg'
                     type='text'
                     placeholder='Email'
+                    name='email'
                   />
                 </fieldset>
                 <fieldset className='form-group'>
@@ -57,10 +96,11 @@ export default function Settings() {
                     className='form-control form-control-lg'
                     type='password'
                     placeholder='New Password'
+                    name='password'
                   />
                 </fieldset>
                 <button className='btn btn-lg btn-primary pull-xs-right'>
-                  Update Settings
+                  {isPending ? 'Updating' : 'Update Settings'}
                 </button>
               </fieldset>
             </form>
