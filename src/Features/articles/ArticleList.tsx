@@ -59,10 +59,7 @@ export default function ArticleList({
               <i className='ion-heart'></i> {article.favoritesCount}
             </button>
           </div>
-          <a
-            href='/article/how-to-build-webapps-that-scale'
-            className='preview-link'
-          >
+          <a href={`/article/${article.slug}`} className='preview-link'>
             <h1>{article.title}</h1>
             <p>{article.description}</p>
             <span>Read more...</span>
