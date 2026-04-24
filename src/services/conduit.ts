@@ -10,6 +10,7 @@ import type {
   PagingParams,
   ArticleCreation,
   UpdateUserRequest,
+  SingleArticleResponse,
 } from './types';
 import type { AuthState } from '../Features/auth/types';
 
@@ -59,6 +60,10 @@ export const conduitApi = createApi({
               { type: 'articles', id: 'LIST' },
             ]
           : [{ type: 'articles', id: 'LIST' }],
+    }),
+
+    getArticle: builder.query<SingleArticleResponse, string>({
+      query: (slug) => `articles/${slug}`,
     }),
 
     getProfileArticles: builder.query<ArticleApiResponse, PagingParams>({
@@ -178,4 +183,5 @@ export const {
   useFollowUserMutation,
   useUnFollowUserMutation,
   useUpdateUserMutation,
+  useGetArticleQuery,
 } = conduitApi;

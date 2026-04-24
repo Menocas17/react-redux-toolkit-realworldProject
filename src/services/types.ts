@@ -4,6 +4,7 @@ export interface Article {
   description: string;
   tagList: string[];
   createdAt: string;
+  body: string;
   updatedAt: string;
   favorited: boolean;
   favoritesCount: number;
@@ -13,6 +14,10 @@ export interface Article {
     image: string | null;
     following: boolean;
   };
+}
+
+export interface SingleArticleResponse {
+  article: Article;
 }
 
 export interface ArticleCreation {

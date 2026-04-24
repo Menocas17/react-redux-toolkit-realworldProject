@@ -1,37 +1,73 @@
 //TODO - Make this page actually display real info and add interactivity (being able to favorite the article, or going to edit or delete the article if you are the owner)
+import { useGetArticleQuery, useGetMeQuery } from '../../services/conduit';
+import { useParams } from 'react-router';
+import { formatDate } from '../../utils/DataFormatter';
 
 export default function Article() {
+  const { articleSlug } = useParams<{ articleSlug: string }>();
+  const { data: user } = useGetMeQuery();
+
+  const {
+    data: article,
+    error,
+    isLoading,
+  } = useGetArticleQuery(articleSlug ?? '');
+
+  const articleData = article?.article;
+
+  const isOwnProfile = user?.user.username === articleData?.author.username;
+
+  if (isLoading) return <h1>The article is loading</h1>;
+
+  if (error) return <h1>Opps something went wrong, try relodign the page</h1>;
+
   return (
     <div className='article-page'>
       <div className='banner'>
         <div className='container'>
-          <h1>How to build webapps that scale</h1>
-
+          <h1>{articleData?.title}</h1>
+          <p>{articleData?.description}</p>
           <div className='article-meta'>
-            <a href='/profile/eric-simons'>
-              <img src='http://i.imgur.com/Qr71crq.jpg' />
+            <a href={`/profile/${articleData?.author.username}`}>
+              <img src={articleData?.author.image || '/default-avatar.svg'} />
             </a>
             <div className='info'>
-              <a href='/profile/eric-simons' className='author'>
-                Eric Simons
+              <a
+                href={`/profile/${articleData?.author.username}`}
+                className='author'
+              >
+                {articleData?.author.username}
               </a>
-              <span className='date'>January 20th</span>
+              <span className='date'>
+                {formatDate(articleData?.createdAt ?? '')}
+              </span>
             </div>
-            <button className='btn btn-sm btn-outline-secondary'>
-              <i className='ion-plus-round'></i>
-              &nbsp; Follow Eric Simons <span className='counter'>(10)</span>
-            </button>
+            {isOwnProfile ? (
+              ''
+            ) : (
+              <button className='btn btn-sm btn-outline-secondary'>
+                <i className='ion-plus-round'></i>
+                &nbsp; Follow {articleData?.author.username}
+              </button>
+            )}
             &nbsp;&nbsp;
             <button className='btn btn-sm btn-outline-primary'>
               <i className='ion-heart'></i>
-              &nbsp; Favorite Post <span className='counter'>(29)</span>
+              &nbsp; Favorite Post{' '}
+              <span className='counter'>({articleData?.favoritesCount})</span>
             </button>
-            <button className='btn btn-sm btn-outline-secondary'>
-              <i className='ion-edit'></i> Edit Article
-            </button>
-            <button className='btn btn-sm btn-outline-danger'>
-              <i className='ion-trash-a'></i> Delete Article
-            </button>
+            {isOwnProfile ? (
+              <>
+                <button className='btn btn-sm btn-outline-secondary'>
+                  <i className='ion-edit'></i> Edit Article
+                </button>
+                <button className='btn btn-sm btn-outline-danger'>
+                  <i className='ion-trash-a'></i> Delete Article
+                </button>
+              </>
+            ) : (
+              ''
+            )}
           </div>
         </div>
       </div>
@@ -39,12 +75,7 @@ export default function Article() {
       <div className='container page'>
         <div className='row article-content'>
           <div className='col-md-12'>
-            <p>
-              Web development technologies have evolved at an incredible clip
-              over the past few years.
-            </p>
-            <h2 id='introducing-ionic'>Introducing RealWorld.</h2>
-            <p>It's a great solution for learning how other frameworks work.</p>
+            <p>{articleData?.body}</p>
             <ul className='tag-list'>
               <li className='tag-default tag-pill tag-outline'>realworld</li>
               <li className='tag-default tag-pill tag-outline'>
@@ -58,30 +89,46 @@ export default function Article() {
 
         <div className='article-actions'>
           <div className='article-meta'>
-            <a href='profile.html'>
-              <img src='http://i.imgur.com/Qr71crq.jpg' />
+            <a href={`/profile/${articleData?.author.username}`}>
+              <img src={articleData?.author.image || '/default-avatar.svg'} />
             </a>
             <div className='info'>
-              <a href='' className='author'>
-                Eric Simons
+              <a
+                href={`/profile/${articleData?.author.username}`}
+                className='author'
+              >
+                {articleData?.author.username}
               </a>
-              <span className='date'>January 20th</span>
+              <span className='date'>
+                {formatDate(articleData?.createdAt ?? '')}
+              </span>
             </div>
-            <button className='btn btn-sm btn-outline-secondary'>
-              <i className='ion-plus-round'></i>
-              &nbsp; Follow Eric Simons
-            </button>
-            &nbsp;
+            {isOwnProfile ? (
+              ''
+            ) : (
+              <button className='btn btn-sm btn-outline-secondary'>
+                <i className='ion-plus-round'></i>
+                &nbsp; Follow {articleData?.author.username}
+              </button>
+            )}
+            &nbsp;&nbsp;
             <button className='btn btn-sm btn-outline-primary'>
               <i className='ion-heart'></i>
-              &nbsp; Favorite Article <span className='counter'>(29)</span>
+              &nbsp; Favorite Post{' '}
+              <span className='counter'>({articleData?.favoritesCount})</span>
             </button>
-            <button className='btn btn-sm btn-outline-secondary'>
-              <i className='ion-edit'></i> Edit Article
-            </button>
-            <button className='btn btn-sm btn-outline-danger'>
-              <i className='ion-trash-a'></i> Delete Article
-            </button>
+            {isOwnProfile ? (
+              <>
+                <button className='btn btn-sm btn-outline-secondary'>
+                  <i className='ion-edit'></i> Edit Article
+                </button>
+                <button className='btn btn-sm btn-outline-danger'>
+                  <i className='ion-trash-a'></i> Delete Article
+                </button>
+              </>
+            ) : (
+              ''
+            )}
           </div>
         </div>
 
