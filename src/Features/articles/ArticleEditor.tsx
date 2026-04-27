@@ -88,7 +88,7 @@ export default function ArticleEditor() {
                     type='text'
                     value={currentTag}
                     className='form-control'
-                    placeholder='Enter tags'
+                    placeholder='Write a tag and press "Enter"'
                     onChange={(e) => setCurrentTag(e.target.value)}
                     onKeyDown={handleAddTag}
                   />
