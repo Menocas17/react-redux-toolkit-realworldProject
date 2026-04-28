@@ -4,6 +4,10 @@ import {
   useGetArticleCommentsQuery,
   useAddNewCommentMutation,
   useDeleteCommentMutation,
+  useFollowUserMutation,
+  useUnFollowUserMutation,
+  useFavoriteMutation,
+  useUnFavoriteMutation,
 } from '../../services/conduit';
 import { useParams } from 'react-router';
 import { formatDate } from '../../utils/DataFormatter';
@@ -16,6 +20,10 @@ export default function Article() {
   const { data: commentsData } = useGetArticleCommentsQuery(articleSlug ?? '');
   const [addComment] = useAddNewCommentMutation();
   const [deleteComment] = useDeleteCommentMutation();
+  const [followUser] = useFollowUserMutation();
+  const [unFollowUser] = useUnFollowUserMutation();
+  const [favorite] = useFavoriteMutation();
+  const [unFavorite] = useUnFavoriteMutation();
   const {
     data: article,
     error,
@@ -42,6 +50,41 @@ export default function Article() {
     },
     null,
   );
+
+  const handleFollowUnfollow = async () => {
+    const authorUsername = articleData?.author.username;
+    if (!authorUsername) {
+      console.error('Could not find the user name');
+      return;
+    }
+
+    try {
+      if (articleData?.author.following) {
+        await unFollowUser(authorUsername).unwrap();
+      } else {
+        await followUser(authorUsername).unwrap();
+      }
+    } catch (err) {
+      console.error('Error executing mutation follow/unfollow:', err);
+    }
+  };
+
+  const handleFavoriteUnfavotire = async () => {
+    if (!articleSlug) {
+      console.error('Could not find the article slug');
+      return;
+    }
+
+    try {
+      if (articleData?.favorited) {
+        await unFavorite(articleSlug).unwrap();
+      } else {
+        await favorite(articleSlug).unwrap();
+      }
+    } catch (err) {
+      console.error('Error executing mutation fav/Unfav:', err);
+    }
+  };
 
   const articleData = article?.article;
   const comments = commentsData?.comments ?? [];
@@ -76,15 +119,26 @@ export default function Article() {
             {isOwnProfile ? (
               ''
             ) : (
-              <button className='btn btn-sm btn-outline-secondary'>
+              <button
+                className='btn btn-sm btn-outline-secondary'
+                onClick={handleFollowUnfollow}
+              >
                 <i className='ion-plus-round'></i>
-                &nbsp; Follow {articleData?.author.username}
+                &nbsp; {articleData?.author.following
+                  ? 'Unfollow'
+                  : 'Follow'}{' '}
+                {articleData?.author.username}
               </button>
             )}
             &nbsp;&nbsp;
-            <button className='btn btn-sm btn-outline-primary'>
+            <button
+              className='btn btn-sm btn-outline-primary'
+              onClick={handleFavoriteUnfavotire}
+            >
               <i className='ion-heart'></i>
-              &nbsp; Favorite Post{' '}
+              &nbsp; {articleData?.favorited
+                ? 'Unfavorite'
+                : 'Favorite'} Post{' '}
               <span className='counter'>({articleData?.favoritesCount})</span>
             </button>
             {isOwnProfile ? (
@@ -138,15 +192,26 @@ export default function Article() {
             {isOwnProfile ? (
               ''
             ) : (
-              <button className='btn btn-sm btn-outline-secondary'>
+              <button
+                className='btn btn-sm btn-outline-secondary'
+                onClick={handleFollowUnfollow}
+              >
                 <i className='ion-plus-round'></i>
-                &nbsp; Follow {articleData?.author.username}
+                &nbsp; {articleData?.author.following
+                  ? 'Unfollow'
+                  : 'Follow'}{' '}
+                {articleData?.author.username}
               </button>
             )}
             &nbsp;&nbsp;
-            <button className='btn btn-sm btn-outline-primary'>
+            <button
+              className='btn btn-sm btn-outline-primary'
+              onClick={handleFavoriteUnfavotire}
+            >
               <i className='ion-heart'></i>
-              &nbsp; Favorite Post{' '}
+              &nbsp; {articleData?.favorited
+                ? 'Unfavorite'
+                : 'Favorite'} Post{' '}
               <span className='counter'>({articleData?.favoritesCount})</span>
             </button>
             {isOwnProfile ? (

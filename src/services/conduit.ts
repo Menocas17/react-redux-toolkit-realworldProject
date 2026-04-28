@@ -35,7 +35,7 @@ export const conduitApi = createApi({
     },
   }),
 
-  tagTypes: ['user', 'articles', 'profile', 'comments'],
+  tagTypes: ['user', 'articles', 'profile', 'comments', 'article'],
   endpoints: (builder) => ({
     getMe: builder.query<LoginResponse, void>({
       query: () => 'user',
@@ -68,6 +68,7 @@ export const conduitApi = createApi({
 
     getArticle: builder.query<SingleArticleResponse, string>({
       query: (slug) => `articles/${slug}`,
+      providesTags: ['article'],
     }),
 
     getProfileArticles: builder.query<ArticleApiResponse, PagingParams>({
@@ -155,7 +156,10 @@ export const conduitApi = createApi({
         method: 'POST',
       }),
 
-      invalidatesTags: (result, error, arg) => [{ type: 'articles', id: arg }],
+      invalidatesTags: (result, error, arg) => [
+        { type: 'articles', id: arg },
+        'article',
+      ],
     }),
 
     unFavorite: builder.mutation<Article, string>({
@@ -164,7 +168,10 @@ export const conduitApi = createApi({
         method: 'DELETE',
       }),
 
-      invalidatesTags: (result, error, arg) => [{ type: 'articles', id: arg }],
+      invalidatesTags: (result, error, arg) => [
+        { type: 'articles', id: arg },
+        'article',
+      ],
     }),
 
     addArticle: builder.mutation<Article, ArticleCreation>({
@@ -181,7 +188,7 @@ export const conduitApi = createApi({
         url: `profiles/${username}/follow`,
         method: 'POST',
       }),
-      invalidatesTags: ['profile'],
+      invalidatesTags: ['profile', 'article'],
     }),
 
     UnFollowUser: builder.mutation<ProfileResponse, string>({
@@ -189,7 +196,7 @@ export const conduitApi = createApi({
         url: `profiles/${username}/follow`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['profile'],
+      invalidatesTags: ['profile', 'article'],
     }),
   }),
 });
