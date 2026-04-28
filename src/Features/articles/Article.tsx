@@ -1,4 +1,3 @@
-//TODO - Make this page actually display real info and add interactivity (being able to favorite the article, or going to edit or delete the article if you are the owner)
 import {
   useGetArticleQuery,
   useGetMeQuery,
@@ -109,10 +108,11 @@ export default function Article() {
           <div className='col-md-12'>
             <p>{articleData?.body}</p>
             <ul className='tag-list'>
-              <li className='tag-default tag-pill tag-outline'>realworld</li>
-              <li className='tag-default tag-pill tag-outline'>
-                implementations
-              </li>
+              {articleData?.tagList.map((tag) => (
+                <li className='tag-default tag-pill tag-outline' key={tag}>
+                  {tag}
+                </li>
+              ))}
             </ul>
           </div>
         </div>
