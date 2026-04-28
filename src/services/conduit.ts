@@ -16,6 +16,7 @@ import type {
   AddCommentRequest,
   DeleteComment,
   PaginationHome,
+  UpdateArticle,
 } from './types';
 import type { AuthState } from '../Features/auth/types';
 
@@ -217,6 +218,22 @@ export const conduitApi = createApi({
       invalidatesTags: [{ type: 'articles', id: 'LIST' }, 'tags'],
     }),
 
+    updateArticle: builder.mutation<Article, Partial<UpdateArticle>>({
+      query: (article) => ({
+        url: `articles/${article.slug}`,
+        method: 'PUT',
+        body: { article: article.article },
+      }),
+      invalidatesTags: [{ type: 'articles', id: 'LIST' }, 'tags'],
+    }),
+
+    deleteArticle: builder.mutation<void, string>({
+      query: (slug) => ({
+        url: `articles/${slug}`,
+        method: 'DELETE',
+      }),
+    }),
+
     followUser: builder.mutation<ProfileResponse, string>({
       query: (username) => ({
         url: `profiles/${username}/follow`,
@@ -256,4 +273,6 @@ export const {
   useDeleteCommentMutation,
   useGetOwnFeedQuery,
   useGetTagFeedQuery,
+  useUpdateArticleMutation,
+  useDeleteArticleMutation,
 } = conduitApi;

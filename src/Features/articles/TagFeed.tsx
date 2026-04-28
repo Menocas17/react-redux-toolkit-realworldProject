@@ -14,6 +14,8 @@ export default function TagFeed() {
     isLoading,
   } = useGetTagFeedQuery({ tag: selectedTag, limit, offset });
 
+  //TODO - add skeleton for the feed
+
   if (isLoading) return <h1>The feed is loading</h1>;
 
   if (error) return <h1>Opps something went wrong, try relodign the page</h1>;

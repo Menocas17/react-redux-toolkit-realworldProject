@@ -50,13 +50,20 @@ export interface SingleArticleResponse {
   article: Article;
 }
 
+interface simpleArticle {
+  title: string;
+  description: string;
+  body: string;
+  tagList: string[];
+}
+
 export interface ArticleCreation {
-  article: {
-    title: string;
-    description: string;
-    body: string;
-    tagList: string[];
-  };
+  article: simpleArticle;
+}
+
+export interface UpdateArticle {
+  article: simpleArticle;
+  slug: string;
 }
 
 export interface ArticleApiResponse {

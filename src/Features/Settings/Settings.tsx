@@ -7,6 +7,8 @@ import type { ConduitError } from '../../services/types';
 
 type ActionState = { [key: string]: string[] } | null;
 
+//TODO - Display the current info in the form
+
 export default function Settings() {
   const dispatch = useAppDispatch();
   const [update] = useUpdateUserMutation();

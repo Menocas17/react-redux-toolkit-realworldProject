@@ -8,11 +8,13 @@ import {
   useUnFollowUserMutation,
   useFavoriteMutation,
   useUnFavoriteMutation,
+  useDeleteArticleMutation,
 } from '../../services/conduit';
 import { useParams } from 'react-router';
 import { formatDate } from '../../utils/DataFormatter';
 import { useActionState } from 'react';
 import { type ActionState, type ConduitError } from '../../services/types';
+import { useNavigate } from 'react-router';
 
 export default function Article() {
   const { articleSlug } = useParams<{ articleSlug: string }>();
@@ -24,6 +26,8 @@ export default function Article() {
   const [unFollowUser] = useUnFollowUserMutation();
   const [favorite] = useFavoriteMutation();
   const [unFavorite] = useUnFavoriteMutation();
+  const [deleteArticle] = useDeleteArticleMutation();
+  const navigate = useNavigate();
   const {
     data: article,
     error,
@@ -50,6 +54,11 @@ export default function Article() {
     },
     null,
   );
+  //TODO - Add the confirmation to delete the article
+  const handleDelete = () => {
+    deleteArticle(articleData?.slug ?? '');
+    navigate('/');
+  };
 
   const handleFollowUnfollow = async () => {
     const authorUsername = articleData?.author.username;
@@ -143,10 +152,16 @@ export default function Article() {
             </button>
             {isOwnProfile ? (
               <>
-                <button className='btn btn-sm btn-outline-secondary'>
+                <a
+                  className='btn btn-sm btn-outline-secondary'
+                  href={`/editor/${articleData?.slug}`}
+                >
                   <i className='ion-edit'></i> Edit Article
-                </button>
-                <button className='btn btn-sm btn-outline-danger'>
+                </a>
+                <button
+                  className='btn btn-sm btn-outline-danger'
+                  onClick={handleDelete}
+                >
                   <i className='ion-trash-a'></i> Delete Article
                 </button>
               </>
@@ -216,10 +231,16 @@ export default function Article() {
             </button>
             {isOwnProfile ? (
               <>
-                <button className='btn btn-sm btn-outline-secondary'>
+                <a
+                  className='btn btn-sm btn-outline-secondary'
+                  href={`/editor/${articleData?.slug}`}
+                >
                   <i className='ion-edit'></i> Edit Article
-                </button>
-                <button className='btn btn-sm btn-outline-danger'>
+                </a>
+                <button
+                  className='btn btn-sm btn-outline-danger'
+                  onClick={handleDelete}
+                >
                   <i className='ion-trash-a'></i> Delete Article
                 </button>
               </>
