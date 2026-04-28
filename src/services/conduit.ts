@@ -15,6 +15,7 @@ import type {
   singleComment,
   AddCommentRequest,
   DeleteComment,
+  PaginationHome,
 } from './types';
 import type { AuthState } from '../Features/auth/types';
 
@@ -35,7 +36,7 @@ export const conduitApi = createApi({
     },
   }),
 
-  tagTypes: ['user', 'articles', 'profile', 'comments', 'article'],
+  tagTypes: ['user', 'articles', 'profile', 'comments', 'article', 'tags'],
   endpoints: (builder) => ({
     getMe: builder.query<LoginResponse, void>({
       query: () => 'user',
@@ -49,10 +50,11 @@ export const conduitApi = createApi({
 
     getAllTags: builder.query<TagsApiResponse, void>({
       query: () => '/tags',
+      providesTags: ['tags'],
     }),
 
-    getGlobalFeed: builder.query<ArticleApiResponse, void>({
-      query: () => '/articles',
+    getGlobalFeed: builder.query<ArticleApiResponse, Partial<PaginationHome>>({
+      query: ({ limit, offset }) => `/articles?limit=${limit}&offset=${offset}`,
       providesTags: (result) =>
         result
           ? [
@@ -66,8 +68,9 @@ export const conduitApi = createApi({
           : [{ type: 'articles', id: 'LIST' }],
     }),
 
-    getTagFeed: builder.query<ArticleApiResponse, string>({
-      query: (tag) => `/articles?tag=${tag}`,
+    getTagFeed: builder.query<ArticleApiResponse, Partial<PaginationHome>>({
+      query: ({ tag, limit, offset }) =>
+        `/articles?tag=${tag}&limit=${limit}&offset=${offset}`,
       providesTags: (result) =>
         result
           ? [
@@ -81,8 +84,9 @@ export const conduitApi = createApi({
           : [{ type: 'articles', id: 'LIST' }],
     }),
 
-    getOwnFeed: builder.query<ArticleApiResponse, void>({
-      query: () => 'articles/feed',
+    getOwnFeed: builder.query<ArticleApiResponse, Partial<PaginationHome>>({
+      query: ({ limit, offset }) =>
+        `articles/feed?limit=${limit}&offset=${offset}`,
       providesTags: (result) =>
         result
           ? [
@@ -210,7 +214,7 @@ export const conduitApi = createApi({
         method: 'POST',
         body: article,
       }),
-      invalidatesTags: [{ type: 'articles', id: 'LIST' }],
+      invalidatesTags: [{ type: 'articles', id: 'LIST' }, 'tags'],
     }),
 
     followUser: builder.mutation<ProfileResponse, string>({

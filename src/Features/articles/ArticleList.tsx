@@ -13,14 +13,6 @@ export default function ArticleList({
   const [favorite] = useFavoriteMutation();
   const [unFavorite] = useUnFavoriteMutation();
 
-  if (articles?.length === 0) {
-    return (
-      <div className='no-articles'>
-        <h1 className=''>Opps, looks like there ir no articles yet!</h1>
-      </div>
-    );
-  }
-
   return (
     <>
       {articles?.map((article) => (

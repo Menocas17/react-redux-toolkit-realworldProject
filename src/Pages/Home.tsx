@@ -1,4 +1,3 @@
-//TODO - Add the proper pagination to this page
 import '../styles.css';
 import GlobalFeed from '../Features/articles/GlobalFeed';
 import TagList from '../Features/articles/HomeTagList';
@@ -66,19 +65,6 @@ export default function HomePage() {
             {activeTab === 'global' && <GlobalFeed />}
             {activeTab === 'feed' && <OwnFeed />}
             {activeTab === 'tag' && <TagFeed />}
-
-            <ul className='pagination'>
-              <li className='page-item active'>
-                <a className='page-link' href=''>
-                  1
-                </a>
-              </li>
-              <li className='page-item'>
-                <a className='page-link' href=''>
-                  2
-                </a>
-              </li>
-            </ul>
           </div>
 
           <div className='col-md-3'>
