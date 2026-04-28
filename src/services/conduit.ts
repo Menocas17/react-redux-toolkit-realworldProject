@@ -11,6 +11,10 @@ import type {
   ArticleCreation,
   UpdateUserRequest,
   SingleArticleResponse,
+  CommentsResponse,
+  singleComment,
+  AddCommentRequest,
+  DeleteComment,
 } from './types';
 import type { AuthState } from '../Features/auth/types';
 
@@ -31,7 +35,7 @@ export const conduitApi = createApi({
     },
   }),
 
-  tagTypes: ['user', 'articles', 'profile'],
+  tagTypes: ['user', 'articles', 'profile', 'comments'],
   endpoints: (builder) => ({
     getMe: builder.query<LoginResponse, void>({
       query: () => 'user',
@@ -94,6 +98,28 @@ export const conduitApi = createApi({
               { type: 'articles', id: 'LIST' },
             ]
           : [{ type: 'articles', id: 'LIST' }],
+    }),
+
+    getArticleComments: builder.query<CommentsResponse, string>({
+      query: (slug) => `articles/${slug}/comments`,
+      providesTags: ['comments'],
+    }),
+
+    addNewComment: builder.mutation<singleComment, AddCommentRequest>({
+      query: (commentInfo) => ({
+        url: `articles/${commentInfo.slug}/comments`,
+        method: 'POST',
+        body: { comment: commentInfo.comment },
+      }),
+      invalidatesTags: ['comments'],
+    }),
+
+    deleteComment: builder.mutation<void, DeleteComment>({
+      query: (deleteComment) => ({
+        url: `articles/${deleteComment.slug}/comments/${deleteComment.id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['comments'],
     }),
 
     login: builder.mutation<LoginResponse, LoginRequest>({

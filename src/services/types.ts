@@ -8,12 +8,40 @@ export interface Article {
   updatedAt: string;
   favorited: boolean;
   favoritesCount: number;
-  author: {
-    username: string;
-    bio: string | null;
-    image: string | null;
-    following: boolean;
+  author: Author;
+}
+
+export interface CommentsResponse {
+  comments: Comment[];
+}
+
+export interface AddCommentRequest {
+  slug: string;
+  comment: {
+    body: string;
   };
+}
+
+export interface singleComment {
+  comment: Comment;
+}
+export interface DeleteComment {
+  id: number;
+  slug: string;
+}
+
+export interface Comment {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  body: string;
+  author: Author;
+}
+export interface Author {
+  username: string;
+  bio: string | null;
+  image: string | null;
+  following: boolean;
 }
 
 export interface SingleArticleResponse {
