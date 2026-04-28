@@ -937,6 +937,15 @@ fieldset[disabled] a.btn {
   padding: 0.75rem 1.25rem;
   background-color: #f5f5f5;
   border-top: 1px solid #eee;
+  display: flex;
+  width: 100%;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.post-comment {
+  justify-content: flex-end;
 }
 
 .card-footer::after {

@@ -1,19 +1,51 @@
 //TODO - Make this page actually display real info and add interactivity (being able to favorite the article, or going to edit or delete the article if you are the owner)
-import { useGetArticleQuery, useGetMeQuery } from '../../services/conduit';
+import {
+  useGetArticleQuery,
+  useGetMeQuery,
+  useGetArticleCommentsQuery,
+  useAddNewCommentMutation,
+  useDeleteCommentMutation,
+} from '../../services/conduit';
 import { useParams } from 'react-router';
 import { formatDate } from '../../utils/DataFormatter';
+import { useActionState } from 'react';
+import { type ActionState, type ConduitError } from '../../services/types';
 
 export default function Article() {
   const { articleSlug } = useParams<{ articleSlug: string }>();
   const { data: user } = useGetMeQuery();
-
+  const { data: commentsData } = useGetArticleCommentsQuery(articleSlug ?? '');
+  const [addComment] = useAddNewCommentMutation();
+  const [deleteComment] = useDeleteCommentMutation();
   const {
     data: article,
     error,
     isLoading,
   } = useGetArticleQuery(articleSlug ?? '');
+  const [errMsg, formAction, isPending] = useActionState<ActionState, FormData>(
+    async (_, formData) => {
+      const body = formData.get('comment')?.toString() || '';
+
+      const commentRequest = {
+        slug: articleSlug ?? '',
+        comment: {
+          body: body,
+        },
+      };
+
+      try {
+        await addComment(commentRequest).unwrap();
+        return null;
+      } catch (err) {
+        const error = err as ConduitError;
+        return error?.data.errors;
+      }
+    },
+    null,
+  );
 
   const articleData = article?.article;
+  const comments = commentsData?.comments ?? [];
 
   const isOwnProfile = user?.user.username === articleData?.author.username;
 
@@ -134,69 +166,86 @@ export default function Article() {
 
         <div className='row'>
           <div className='col-xs-12 col-md-8 offset-md-2'>
-            <form className='card comment-form'>
+            {errMsg && (
+              <ul className='error-messages'>
+                {Object.entries(errMsg).map(([field, messages]) =>
+                  messages.map((message, index) => (
+                    <li key={`${field} - ${index}`}>
+                      {field} {message}
+                    </li>
+                  )),
+                )}
+              </ul>
+            )}
+            <form className='card comment-form' action={formAction}>
               <div className='card-block'>
                 <textarea
                   className='form-control'
                   placeholder='Write a comment...'
                   rows={3}
+                  name='comment'
                 ></textarea>
               </div>
-              <div className='card-footer'>
-                <img
-                  src='http://i.imgur.com/Qr71crq.jpg'
+              <div className='card-footer post-comment'>
+                {/* <img
+                  src={user?.user.image ?? '/default-avatar.svg'}
                   className='comment-author-img'
-                />
-                <button className='btn btn-sm btn-primary'>Post Comment</button>
+                /> */}
+                <button className='btn btn-sm btn-primary'>
+                  {isPending ? 'Posting Comment' : 'Post Comment'}
+                </button>
               </div>
             </form>
 
-            <div className='card'>
-              <div className='card-block'>
-                <p className='card-text'>
-                  With supporting text below as a natural lead-in to additional
-                  content.
-                </p>
-              </div>
-              <div className='card-footer'>
-                <a href='/profile/author' className='comment-author'>
-                  <img
-                    src='http://i.imgur.com/Qr71crq.jpg'
-                    className='comment-author-img'
-                  />
-                </a>
-                &nbsp;
-                <a href='/profile/jacob-schmidt' className='comment-author'>
-                  Jacob Schmidt
-                </a>
-                <span className='date-posted'>Dec 29th</span>
-              </div>
-            </div>
+            {comments?.length > 0
+              ? comments.map((comment) => (
+                  <div className='card' key={comment.id}>
+                    <div className='card-block'>
+                      <p className='card-text'>{comment.body}</p>
+                    </div>
+                    <div className='card-footer'>
+                      <div>
+                        <a
+                          href={`/profile/${comment.author.username}`}
+                          className='comment-author'
+                        >
+                          <img
+                            src={comment.author.image ?? '/default-avatar.svg'}
+                            className='comment-author-img'
+                          />
+                        </a>
+                        &nbsp;
+                        <a
+                          href={`/profile/${comment.author.username}`}
+                          className='comment-author'
+                        >
+                          {comment.author.username}
+                        </a>
+                        <span className='date-posted'>
+                          {formatDate(comment.createdAt)}
+                        </span>
+                      </div>
 
-            <div className='card'>
-              <div className='card-block'>
-                <p className='card-text'>
-                  With supporting text below as a natural lead-in to additional
-                  content.
-                </p>
-              </div>
-              <div className='card-footer'>
-                <a href='/profile/author' className='comment-author'>
-                  <img
-                    src='http://i.imgur.com/Qr71crq.jpg'
-                    className='comment-author-img'
-                  />
-                </a>
-                &nbsp;
-                <a href='/profile/jacob-schmidt' className='comment-author'>
-                  Jacob Schmidt
-                </a>
-                <span className='date-posted'>Dec 29th</span>
-                <span className='mod-options'>
-                  <i className='ion-trash-a'></i>
-                </span>
-              </div>
-            </div>
+                      {comment.author.username === user?.user.username ? (
+                        <button
+                          className='btn btn-sm btn-outline-danger'
+                          style={{ marginLeft: 'auto' }}
+                          onClick={() =>
+                            deleteComment({
+                              id: comment.id,
+                              slug: articleSlug ?? '',
+                            })
+                          }
+                        >
+                          <i className='ion-trash-a'> Delete Comment</i>
+                        </button>
+                      ) : (
+                        ''
+                      )}
+                    </div>
+                  </div>
+                ))
+              : ''}
           </div>
         </div>
       </div>

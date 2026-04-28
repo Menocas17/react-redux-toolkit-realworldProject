@@ -210,4 +210,7 @@ export const {
   useUnFollowUserMutation,
   useUpdateUserMutation,
   useGetArticleQuery,
+  useAddNewCommentMutation,
+  useGetArticleCommentsQuery,
+  useDeleteCommentMutation,
 } = conduitApi;

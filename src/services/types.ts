@@ -22,6 +22,8 @@ export interface AddCommentRequest {
   };
 }
 
+export type ActionState = { [key: string]: string[] } | null;
+
 export interface singleComment {
   comment: Comment;
 }
