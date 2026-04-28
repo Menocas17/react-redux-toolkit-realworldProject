@@ -66,6 +66,36 @@ export const conduitApi = createApi({
           : [{ type: 'articles', id: 'LIST' }],
     }),
 
+    getTagFeed: builder.query<ArticleApiResponse, string>({
+      query: (tag) => `/articles?tag=${tag}`,
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.articles.map(({ slug }: { slug: string }) => ({
+                type: 'articles' as const,
+                id: slug,
+              })),
+
+              { type: 'articles', id: 'LIST' },
+            ]
+          : [{ type: 'articles', id: 'LIST' }],
+    }),
+
+    getOwnFeed: builder.query<ArticleApiResponse, void>({
+      query: () => 'articles/feed',
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.articles.map(({ slug }: { slug: string }) => ({
+                type: 'articles' as const,
+                id: slug,
+              })),
+
+              { type: 'articles', id: 'LIST' },
+            ]
+          : [{ type: 'articles', id: 'LIST' }],
+    }),
+
     getArticle: builder.query<SingleArticleResponse, string>({
       query: (slug) => `articles/${slug}`,
       providesTags: ['article'],
@@ -220,4 +250,6 @@ export const {
   useAddNewCommentMutation,
   useGetArticleCommentsQuery,
   useDeleteCommentMutation,
+  useGetOwnFeedQuery,
+  useGetTagFeedQuery,
 } = conduitApi;

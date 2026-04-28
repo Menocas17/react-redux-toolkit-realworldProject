@@ -131,3 +131,8 @@ export interface PagingParams {
   limit: number;
   offset: number;
 }
+
+export interface FeedState {
+  tab: 'tag' | 'global' | 'feed';
+  tag: string;
+}

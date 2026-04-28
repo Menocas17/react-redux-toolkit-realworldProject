@@ -1,7 +1,11 @@
 import { useGetAllTagsQuery } from '../../services/conduit';
+import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import { setTag, changeTab } from './feedSlice';
 
 export default function TagList() {
   const { data: tags, error, isLoading } = useGetAllTagsQuery();
+  const tagSelected = useAppSelector((state) => state.feed.tag);
+  const dispatch = useAppDispatch();
 
   if (isLoading) return <h1>The tags are loading</h1>;
 
@@ -12,9 +16,16 @@ export default function TagList() {
   return (
     <div className='tag-list'>
       {tags.tags.map((tag) => (
-        <a href='' className='tag-pill tag-default' key={tag}>
+        <button
+          className={`tag-pill tag-default ${tagSelected === tag ? 'tag-selected' : ''}`}
+          key={tag}
+          onClick={() => {
+            dispatch(setTag({ tag: tag }));
+            dispatch(changeTab({ tab: 'tag' }));
+          }}
+        >
           {tag}
-        </a>
+        </button>
       ))}
     </div>
   );

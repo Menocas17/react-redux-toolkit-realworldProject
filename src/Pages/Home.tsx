@@ -1,10 +1,17 @@
 //TODO - Add the proper pagination to this page
-//TODO - Add the interactivity to change to 'your feed' and to filter by tags
 import '../styles.css';
 import GlobalFeed from '../Features/articles/GlobalFeed';
 import TagList from '../Features/articles/HomeTagList';
+import { changeTab, setTag } from '../Features/articles/feedSlice';
+import { useAppSelector, useAppDispatch } from '../store/hooks';
+import OwnFeed from '../Features/articles/YourFeed';
+import TagFeed from '../Features/articles/TagFeed';
 
 export default function HomePage() {
+  const tagSelected = useAppSelector((state) => state.feed.tag);
+  const activeTab = useAppSelector((state) => state.feed.tab);
+  const dispatch = useAppDispatch();
+
   return (
     <div className='home-page'>
       <div className='banner'>
@@ -20,19 +27,45 @@ export default function HomePage() {
             <div className='feed-toggle'>
               <ul className='nav nav-pills outline-active'>
                 <li className='nav-item'>
-                  <a className='nav-link' href=''>
+                  <button
+                    className={`nav-link ${activeTab === 'feed' ? 'active' : ''}`}
+                    onClick={() => {
+                      dispatch(changeTab({ tab: 'feed' }));
+                      dispatch(setTag({ tag: '' }));
+                    }}
+                  >
                     Your Feed
-                  </a>
+                  </button>
                 </li>
                 <li className='nav-item'>
-                  <a className='nav-link active' href=''>
+                  <button
+                    className={`nav-link ${activeTab === 'global' ? 'active' : ''}`}
+                    onClick={() => {
+                      dispatch(changeTab({ tab: 'global' }));
+                      dispatch(setTag({ tag: '' }));
+                    }}
+                  >
                     Global Feed
-                  </a>
+                  </button>
                 </li>
+                {tagSelected ? (
+                  <li className='nav-item'>
+                    <button
+                      className={`nav-link ${activeTab === 'tag' ? 'active' : ''}`}
+                      onClick={() => dispatch(changeTab({ tab: 'tag' }))}
+                    >
+                      {tagSelected}
+                    </button>
+                  </li>
+                ) : (
+                  ''
+                )}
               </ul>
             </div>
 
-            <GlobalFeed />
+            {activeTab === 'global' && <GlobalFeed />}
+            {activeTab === 'feed' && <OwnFeed />}
+            {activeTab === 'tag' && <TagFeed />}
 
             <ul className='pagination'>
               <li className='page-item active'>
