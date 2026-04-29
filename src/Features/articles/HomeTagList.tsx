@@ -1,5 +1,6 @@
 import { useGetAllTagsQuery } from '../../services/conduit';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import Spinner from '../../utils/Spinner';
 import { setTag, changeTab } from './feedSlice';
 
 export default function TagList() {
@@ -7,7 +8,7 @@ export default function TagList() {
   const tagSelected = useAppSelector((state) => state.feed.tag);
   const dispatch = useAppDispatch();
 
-  if (isLoading) return <h1>The tags are loading</h1>;
+  if (isLoading) return <Spinner />;
 
   if (error) return <h1>Opps something went wrong, try relodign the page</h1>;
 
