@@ -2,6 +2,7 @@ import { useGetTagFeedQuery } from '../../services/conduit';
 import ArticleList from './ArticleList';
 import { useAppSelector } from '../../store/hooks';
 import { useState } from 'react';
+import Spinner from '../../utils/Spinner';
 
 export default function TagFeed() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -16,7 +17,7 @@ export default function TagFeed() {
 
   //TODO - add skeleton for the feed
 
-  if (isLoading) return <h1>The feed is loading</h1>;
+  if (isLoading) return <Spinner />;
 
   if (error) return <h1>Opps something went wrong, try relodign the page</h1>;
 

@@ -1,4 +1,5 @@
 import { useGetOwnFeedQuery } from '../../services/conduit';
+import Spinner from '../../utils/Spinner';
 import ArticleList from './ArticleList';
 import { useState } from 'react';
 
@@ -14,9 +15,31 @@ export default function OwnFeed() {
 
   //TODO - add skeleton for the feed
 
-  if (isLoading) return <h1>The feed is loading</h1>;
+  if (isLoading) return <Spinner />;
 
-  if (error) return <h1>Opps something went wrong, try relodign the page</h1>;
+  if (error) {
+    if ('status' in error) {
+      if (error.status === 401) {
+        return (
+          <div className='login-msg'>
+            <h2>You need to log in to see your feed</h2>
+            <a href='/login' className='btn btn-lg btn-primary'>
+              Sign in
+            </a>
+          </div>
+        );
+      }
+
+      return (
+        <h1>
+          Oops something went wrong (Error {error.status}), try reloading the
+          page
+        </h1>
+      );
+    }
+
+    return <h1>A network error occurred. Please check your connection.</h1>;
+  }
 
   const articles = ownFeed?.articles;
   const totalPages = Math.ceil((ownFeed?.articlesCount ?? 0) / limit);

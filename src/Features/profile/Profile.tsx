@@ -12,6 +12,7 @@ import ArticleList from '../articles/ArticleList';
 import { NavLink } from 'react-router';
 import { useLocation } from 'react-router';
 import { useState } from 'react';
+import Spinner from '../../utils/Spinner';
 
 export default function MyProfile() {
   const { pathname } = useLocation();
@@ -139,7 +140,7 @@ export default function MyProfile() {
             </div>
             {/* //TODO - Add the skeletons to a better UI */}
             {isFetching ? (
-              <div className='article-preview'>Loading articles...</div>
+              <Spinner />
             ) : (
               <>
                 {isFavoritesPage ? (

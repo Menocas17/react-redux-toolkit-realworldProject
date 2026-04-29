@@ -1,4 +1,5 @@
 import { useGetGlobalFeedQuery } from '../../services/conduit';
+import Spinner from '../../utils/Spinner';
 import ArticleList from './ArticleList';
 import { useState } from 'react';
 
@@ -15,7 +16,7 @@ export default function GlobalFeed() {
 
   //TODO - add skeleton for the feed
 
-  if (isLoading) return <h1>The feed is loading</h1>;
+  if (isLoading) return <Spinner />;
 
   if (error) return <h1>Opps something went wrong, try relodign the page</h1>;
 

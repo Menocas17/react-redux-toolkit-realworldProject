@@ -15,6 +15,7 @@ import { formatDate } from '../../utils/DataFormatter';
 import { useActionState } from 'react';
 import { type ActionState, type ConduitError } from '../../services/types';
 import { useNavigate } from 'react-router';
+import Spinner from '../../utils/Spinner';
 
 export default function Article() {
   const { articleSlug } = useParams<{ articleSlug: string }>();
@@ -100,7 +101,8 @@ export default function Article() {
 
   const isOwnProfile = user?.user.username === articleData?.author.username;
 
-  if (isLoading) return <h1>The article is loading</h1>;
+  //TODO - Add skeleton to improve the UX
+  if (isLoading) return <Spinner />;
 
   if (error) return <h1>Opps something went wrong, try relodign the page</h1>;
 

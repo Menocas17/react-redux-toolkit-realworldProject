@@ -1600,3 +1600,18 @@ footer > .container {
   margin: 0 auto;
   margin-top: 30px;
 }
+
+.generic-msg {
+  color: #999;
+  margin-top: 30px;
+  text-align: center;
+}
+
+.login-msg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #999;
+  gap: 20px;
+  margin-top: 30px;
+}
