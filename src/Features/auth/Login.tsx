@@ -71,6 +71,11 @@ export default function Login() {
               </button>
             </form>
           </div>
+          <p className='api-message'>
+            This app uses the public Real World API, and the database is reset
+            it every 24 hours; take that into consideration when logging in or
+            registering.
+          </p>
         </div>
       </div>
     </div>

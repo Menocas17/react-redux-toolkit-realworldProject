@@ -1592,3 +1592,11 @@ footer > .container {
     opacity: 1;
   }
 }
+
+.api-message {
+  color: rgb(150, 11, 11);
+  text-align: center;
+  max-width: 60%;
+  margin: 0 auto;
+  margin-top: 30px;
+}
