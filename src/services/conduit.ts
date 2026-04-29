@@ -191,7 +191,7 @@ export const conduitApi = createApi({
         method: 'POST',
       }),
 
-      invalidatesTags: (result, error, arg) => [
+      invalidatesTags: (_result, _error, arg) => [
         { type: 'articles', id: arg },
         'article',
       ],
@@ -203,7 +203,7 @@ export const conduitApi = createApi({
         method: 'DELETE',
       }),
 
-      invalidatesTags: (result, error, arg) => [
+      invalidatesTags: (_result, _error, arg) => [
         { type: 'articles', id: arg },
         'article',
       ],
